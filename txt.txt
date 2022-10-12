@@ -1,0 +1,17 @@
+barriers(barrierLX, clearBarrierLeft, ii, barrierY)
+        barrierLX += 1
+
+        barriers(barrierMX, clearBarrierMid, ii, barrierY)
+        barrierMX += 1
+
+        barriers(barrierRX, clearBarrierRight, ii, barrierY)
+        barrierRX += 1
+
+function barriers(barrier, barrierArray, n, y) {
+    c.fillRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
+        for (let i = 0; i < barrierArray.length; i++) {
+            if (n === clearBarrierLeft[i]) {
+                c.clearRect(barrier * blockSize, (rows - barrierY) * blockSize, blockSize, blockSize)
+            }
+        }
+}
