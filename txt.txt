@@ -15,3 +15,51 @@ function barriers(barrier, barrierArray, n, y) {
             }
         }
 }
+
+
+if (shotX < -Math.round(cols/2) + 30 && shotX > -Math.round(cols/2) + 9) {
+            let checkBarrier = 53
+            for (let i = 11; i <= 20; i++) {
+                if (shotY === i && clearBarrierLeft.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrierLeft.push(shotX + checkBarrier)
+                    i = 22
+                }
+                else if(shotY - 1 === i && clearBarrierLeft.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrierLeft.push(shotX + checkBarrier)
+                    i = 22
+                }
+                checkBarrier += 20
+            }
+
+
+
+function hitBarrier(checkBarrier, clearBarrier) {
+            for (let i = 11; i <= 20; i++) {
+                if (shotY === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrier.push(shotX + checkBarrier)
+                    i = 22
+                }
+                else if(shotY - 1 === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrier.push(shotX + checkBarrier)
+                    i = 22
+                }
+                checkBarrier += 20
+            }
+}
+
+if (shotX > -54 && shotX < -33) {
+            hitBarrier(53, clearBarrierLeft)
+            console.log('left')
+        }
+        if (shotX > -11 && shotX < 10) {
+            hitBarrier(10, clearBarrierMid)
+            console.log('middle')
+        }
+        if (shotX > 32 && shotX < 53) {
+            hitBarrier(-33, clearBarrierRight)
+            console.log('right')
+        }

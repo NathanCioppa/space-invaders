@@ -29,10 +29,26 @@ function shoot(x, y) {
 function barriers(barrier, barrierArray, n, y) {
     c.fillRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
         for (let i = 0; i < barrierArray.length; i++) {
-            if (n === clearBarrierLeft[i]) {
+            if (n === barrierArray[i]) {
                 c.clearRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
             }
         }
+}
+
+function hitBarrier(checkBarrier, clearBarrier) {
+            for (let i = 11; i <= 20; i++) {
+                if (shotY === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrier.push(shotX + checkBarrier)
+                    i = 22
+                }
+                else if(shotY - 1 === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+                    hit = true
+                    clearBarrier.push(shotX + checkBarrier)
+                    i = 22
+                }
+                checkBarrier += 20
+            }
 }
 
 let playerRight = false
@@ -61,7 +77,7 @@ addEventListener('keyup', (e) => {
     }
 })
 
-let clearBarrierLeft = 
+const barrierArray = 
     [6, 7, 8, 9, 10, 11, 12, 13,
     26, 27, 28, 29, 30, 31, 32, 33,
     46, 47, 48, 49, 50, 51, 52, 53,
@@ -71,14 +87,19 @@ let clearBarrierLeft =
     160, 179,
     180, 181, 198, 199]
 
-let clearBarrierMid = new Array(clearBarrierLeft.length)
-for (let i = 0; i < clearBarrierLeft.length; i++) {
-    clearBarrierMid[i] = clearBarrierLeft[i] + 44
+let clearBarrierLeft = new Array(barrierArray.length)
+for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierLeft[i] = barrierArray[i]
 }
 
-let clearBarrierRight = new Array(clearBarrierLeft.length)
-for (let i = 0; i < clearBarrierLeft.length; i++) {
-    clearBarrierRight[i] = clearBarrierMid[i] + 44
+let clearBarrierMid = new Array(barrierArray.length)
+for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierMid[i] = barrierArray[i]
+}
+
+let clearBarrierRight = new Array(barrierArray.length)
+for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierRight[i] = barrierArray[i]
 }
 
 let playerX = 0
@@ -140,21 +161,14 @@ function invadeSpace() {
             hit = false
         }
 
-        if (shotX < -Math.round(cols/2) + 30 && shotX > -Math.round(cols/2) + 9) {
-            let checkBarrier = 53
-            for (let i = 11; i <= 20; i++) {
-                if (shotY === i && clearBarrierLeft.includes(shotX + checkBarrier) === false) {
-                    hit = true
-                    clearBarrierLeft.push(shotX + checkBarrier)
-                    i = 22
-                }
-                else if(shotY - 1 === i && clearBarrierLeft.includes(shotX + checkBarrier) === false) {
-                    hit = true
-                    clearBarrierLeft.push(shotX + checkBarrier)
-                    i = 22
-                }
-                checkBarrier += 20
-            }
+        if (shotX > -54 && shotX < -33) {
+            hitBarrier(53, clearBarrierLeft)
+        }
+        if (shotX > -11 && shotX < 10) {
+            hitBarrier(10, clearBarrierMid)
+        }
+        if (shotX > 32 && shotX < 53) {
+            hitBarrier(-33, clearBarrierRight)
         }
     }
 
