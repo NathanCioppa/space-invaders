@@ -73,7 +73,7 @@ let pose = 1
 function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align) {
     let alienY = dy
     let alienX = 1 + moveAlien
-    if (countFrames % 100 === 0 && countFrames > 0) {
+    if (countFrames % 30 === 0 && countFrames > 0) {
         moveAlien += d
         pose += 1
         console.log(countFrames)
@@ -147,14 +147,14 @@ const alienTopArray =
     }
 
 const alienMiddleArray = 
-    [0, 1, 3, 4, 5, 6, 7, 9, 10,
-     11, 12, 13, 15, 16, 17, 19, 20, 21,
-     22, 23, 31, 32,
-     33, 36, 40, 43,
+    [0, 1, 3, 4, 5, 6, 7, 9, 10, //8
+     11, 12, 13, 15, 16, 17, 19, 20, 21, //17
+     22, 23, 31, 32, //21
+     33, 36, 40, 43, //25
 
-     56, 64,
-     67, 69, 70, 71, 72, 73, 75,
-     77, 78, 79, 82, 85, 86, 87
+     56, 64, //27
+     67, 69, 70, 71, 72, 73, 75, //34
+     77, 78, 79, 82, 82, 82, 85, 86, 87 //43
     ]
 
     let alienMiddle = new Array(alienMiddleArray.length)
@@ -163,14 +163,14 @@ const alienMiddleArray =
     }
 
 const bottomAlienArray = 
-    [0, 1, 2, 3, 8, 9, 10, 11,
-     12, 23,
+    [0, 1, 2, 3, 8, 9, 10, 11, //7
+     12, 23, //9
 
-     39, 40, 43, 44,
+     39, 40, 43, 44, //13
 
-     60, 61, 65, 66, 70, 71,
-     72, 75, 76, 79, 80, 83,
-     84, 85, 88, 89, 90, 91, 94, 95
+     60, 61, 61, 65, 66, 70, 70, 71, //21
+     72, 75, 76, 79, 80, 83, //27
+     84, 85, 88, 89, 90, 91, 94, 95 //35
     ]
 
     let alienBottom = new Array(bottomAlienArray.length)
@@ -220,35 +220,43 @@ function invadeSpace() {
     }
     drawPlayer(playerX)
 
-    if (pose % 2 === 0) {
-        alienTop[15] = 42
-        alienTop[16] = 51
-        alienTop[17] = 52
-        alienTop[18] = 45
-        alienTop[20] = 49
-        alienTop[23] = 54
-        alienTop[24] = 56
-        alienTop[25] = 58
-        alienTop[28] = 61
-        alienTop[29] = 63
+    if (pose % 2 !== 0) {
+        alienTop[15] = 41; alienTop[16] = 43; alienTop[17] = 44; alienTop[18] = 46
+        alienTop[20] = 48; alienTop[23] = 55
+        alienTop[24] = 57; alienTop[25] = 57; alienTop[28] = 62; alienTop[29] = 62
         moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+
+        alienMiddle[9] = 11; alienMiddle[17] = 21
+        alienMiddle[18] = 22; alienMiddle[21] = 32
+        alienMiddle[22] = 33; alienMiddle[25] = 43
+        alienMiddle[26] = 56; alienMiddle[27] = 64
+        alienMiddle[36] = 78; alienMiddle[39] = 82; alienMiddle[40] = 82; alienMiddle[42] = 86;
         moveAliens(88, 11, 15, 10, alienMiddle, 0)
+
+        alienBottom[16] = 61; alienBottom[19] = 70
+        alienBottom[23] = 75; alienBottom[26] = 80
+        alienBottom[28] = 84; alienBottom[29] = 85; alienBottom[34] = 94; alienBottom[35] = 95
         moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+        
     }
-    else if (pose % 2 !== 0) {
-        alienTop[15] = 41
-        alienTop[16] = 43
-        alienTop[17] = 44
-        alienTop[18] = 46
-        alienTop[20] = 48
-        alienTop[23] = 55
-        alienTop[24] = 57
-        alienTop[25] = 57
-        alienTop[28] = 62
-        alienTop[29] = 62
+    else if (pose % 2 === 0) {
+        alienTop[15] = 42; alienTop[16] = 51; alienTop[17] = 52; alienTop[18] = 45
+        alienTop[20] = 49; alienTop[23] = 54
+        alienTop[24] = 56; alienTop[25] = 58; alienTop[28] = 61; alienTop[29] = 63
         moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+        
+        alienMiddle[9] = 66; alienMiddle[17] = 76
+        alienMiddle[18] = 55; alienMiddle[21] = 23
+        alienMiddle[22] = 55; alienMiddle[25] = 65
+        alienMiddle[26] = 55; alienMiddle[27] = 65
+        alienMiddle[36] = 80; alienMiddle[39] = 81; alienMiddle[40] = 83; alienMiddle[42] = 84;
         moveAliens(88, 11, 15, 10, alienMiddle, 0)
+
+        alienBottom[16] = 62; alienBottom[19] = 69
+        alienBottom[23] = 73; alienBottom[26] = 82
+        alienBottom[28] = 86; alienBottom[29] = 87; alienBottom[34] = 92; alienBottom[35] = 93
         moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+        
     }
 
     c.beginPath
