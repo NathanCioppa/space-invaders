@@ -19,6 +19,11 @@ function drawPlayer(x) {
     c.stroke()
 }
 
+let shotX = 0
+let shotY = 10
+let ready = true
+let hit = false
+
 function shoot(x, y) {
     c.beginPath
     c.fillStyle='black'
@@ -51,6 +56,54 @@ function hitBarrier(checkBarrier, clearBarrier) {
             }
 }
 
+function drawAlien(x, y, n, alienArray) {
+    c.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+    for (let i = 0; i < alienArray.length; i++) {
+        if (n === alienArray[i]) {
+            c.clearRect(x * blockSize, y * blockSize, blockSize, blockSize)
+        }
+    }
+}
+
+let d = 1
+let dy = 20
+let moveAlien = 0
+let pose = 1
+
+function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align) {
+    let alienY = dy
+    let alienX = 1 + moveAlien
+    if (countFrames % 100 === 0 && countFrames > 0) {
+        moveAlien += d
+        pose += 1
+        console.log(countFrames)
+    }
+    if (alienX > 37 && d > 0) {
+        d = -d
+        dy += 10
+    }
+    if (alienX < 2 && d < 0) {
+        d = -d
+        dy += 10
+    }
+
+    c.beginPath
+    c.fillStyle='green'
+    
+    for (let ii = 0; ii < alienArea; ii++) {
+        if (ii % alienWidth === 0 && ii > 0) {
+            alienY += 1
+            alienX = 1 + moveAlien
+        }
+        for (i = 0; i <= 5; i++) {
+            drawAlien((alienX + align) + (i * distApart), alienY + distFromTop, ii, alienArray)
+        }
+        
+        alienX += 1
+    }
+    c.stroke
+}
+
 let playerRight = false
 let playerLeft = false
 let fire = false
@@ -76,6 +129,54 @@ addEventListener('keyup', (e) => {
         playerLeft = false
     }
 })
+
+const alienTopArray = 
+    [0, 1, 2, 5, 6, 7,
+     8, 9, 14, 15,
+     16, 23,
+     26, 29,
+
+     40, 41, 43, 44, 46, 47,
+     48, 50, 53, 55,
+     57, 57, 59, 60, 62, 62
+    ]
+
+    let alienTop = new Array(alienTopArray.length)
+    for (let i = 0; i < alienTopArray.length; i++) {
+        alienTop[i] = alienTopArray[i]
+    }
+
+const alienMiddleArray = 
+    [0, 1, 3, 4, 5, 6, 7, 9, 10,
+     11, 12, 13, 15, 16, 17, 19, 20, 21,
+     22, 23, 31, 32,
+     33, 36, 40, 43,
+
+     56, 64,
+     67, 69, 70, 71, 72, 73, 75,
+     77, 78, 79, 82, 85, 86, 87
+    ]
+
+    let alienMiddle = new Array(alienMiddleArray.length)
+    for (let i = 0; i < alienMiddleArray.length; i++) {
+        alienMiddle[i] = alienMiddleArray[i]
+    }
+
+const bottomAlienArray = 
+    [0, 1, 2, 3, 8, 9, 10, 11,
+     12, 23,
+
+     39, 40, 43, 44,
+
+     60, 61, 65, 66, 70, 71,
+     72, 75, 76, 79, 80, 83,
+     84, 85, 88, 89, 90, 91, 94, 95
+    ]
+
+    let alienBottom = new Array(bottomAlienArray.length)
+    for (let i = 0; i  < bottomAlienArray.length; i++) {
+        alienBottom[i] = bottomAlienArray[i]
+    }
 
 const barrierArray = 
     [6, 7, 8, 9, 10, 11, 12, 13,
@@ -103,11 +204,7 @@ for (let i = 0; i < barrierArray.length; i++) {
 }
 
 let playerX = 0
-let shotX = 0
-let shotY = 10
-let ready = true
-let hit = false
-let old = false
+let countFrames = 0
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -122,6 +219,37 @@ function invadeSpace() {
         playerX += -1
     }
     drawPlayer(playerX)
+
+    if (pose % 2 === 0) {
+        alienTop[15] = 42
+        alienTop[16] = 51
+        alienTop[17] = 52
+        alienTop[18] = 45
+        alienTop[20] = 49
+        alienTop[23] = 54
+        alienTop[24] = 56
+        alienTop[25] = 58
+        alienTop[28] = 61
+        alienTop[29] = 63
+        moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+        moveAliens(88, 11, 15, 10, alienMiddle, 0)
+        moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+    }
+    else if (pose % 2 !== 0) {
+        alienTop[15] = 41
+        alienTop[16] = 43
+        alienTop[17] = 44
+        alienTop[18] = 46
+        alienTop[20] = 48
+        alienTop[23] = 55
+        alienTop[24] = 57
+        alienTop[25] = 57
+        alienTop[28] = 62
+        alienTop[29] = 62
+        moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+        moveAliens(88, 11, 15, 10, alienMiddle, 0)
+        moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+    }
 
     c.beginPath
     c.fillStyle='orange'
@@ -171,6 +299,7 @@ function invadeSpace() {
             hitBarrier(-33, clearBarrierRight)
         }
     }
+    countFrames += 1
 
     c.beginPath
     c.fillStyle='red'

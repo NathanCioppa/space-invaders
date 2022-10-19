@@ -63,3 +63,27 @@ if (shotX > -54 && shotX < -33) {
             hitBarrier(-33, clearBarrierRight)
             console.log('right')
         }
+
+
+
+        c.beginPath
+    c.fillStyle='green'
+    c.fillRect(3 * blockSize, 1 * blockSize, blockSize, blockSize)
+    c.fillRect(9 * blockSize, 1 * blockSize, blockSize, blockSize)
+    c.fillRect(4 * blockSize, 2 * blockSize, blockSize, blockSize)
+    c.fillRect(8 * blockSize, 2 * blockSize, blockSize, blockSize)
+    c.fillRect(3 * blockSize, 3 * blockSize, 7 * blockSize, blockSize)
+    c.fillRect(2 * blockSize, 4 * blockSize, 2 * blockSize, blockSize)
+    c.fillRect(5 * blockSize, 4 * blockSize, 3 * blockSize, blockSize)
+    c.fillRect(9 * blockSize, 4 * blockSize, 2 * blockSize, blockSize)
+    c.fillRect(1 * blockSize, 5 * blockSize, 11 * blockSize, blockSize)
+    c.fillRect(1 * blockSize, 6 * blockSize, blockSize, blockSize)
+    c.fillRect(3 * blockSize, 6 * blockSize, 7 * blockSize, blockSize)
+    c.fillRect(11 * blockSize, 6 * blockSize, blockSize, blockSize)
+    c.fillRect(1 * blockSize, 7 * blockSize, blockSize, blockSize)
+    c.fillRect(3 * blockSize, 7 * blockSize, blockSize, blockSize)
+    c.fillRect(9 * blockSize, 7 * blockSize, blockSize, blockSize)
+    c.fillRect(11 * blockSize, 7 * blockSize, blockSize, blockSize)
+    c.fillRect(4 * blockSize, 8 * blockSize, 2 * blockSize, blockSize)
+    c.fillRect(7 * blockSize, 8 * blockSize, 2 * blockSize, blockSize)
+    c.stroke
