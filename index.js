@@ -67,16 +67,17 @@ function drawAlien(x, y, n, alienArray) {
 
 let d = 1
 let dy = 20
+let alienX
+let alienY
 let moveAlien = 0
 let pose = 1
 
 function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align) {
-    let alienY = dy
-    let alienX = 1 + moveAlien
-    if (countFrames % 30 === 0 && countFrames > 0) {
+    alienY = dy
+    alienX = 1 + moveAlien
+    if (countFrames % 100 === 0 && countFrames > 0) {
         moveAlien += d
         pose += 1
-        console.log(countFrames)
     }
     if (alienX > 37 && d > 0) {
         d = -d
@@ -102,6 +103,7 @@ function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, a
         alienX += 1
     }
     c.stroke
+    
 }
 
 let playerRight = false
@@ -205,6 +207,7 @@ for (let i = 0; i < barrierArray.length; i++) {
 
 let playerX = 0
 let countFrames = 0
+let hitMark = 0 
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -306,6 +309,16 @@ function invadeSpace() {
         if (shotX > 32 && shotX < 53) {
             hitBarrier(-33, clearBarrierRight)
         }
+
+        if (shotX + Math.round(cols/2) >= moveAlien && shotX + Math.round(cols/2) <= moveAlien + 86) {
+            if (rows - shotY >= alienY - 7 && rows - shotY <= alienY + 20) {
+                hitMark =rows -  shotY
+            }
+            else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY + 20) {
+                hitMark =rows - shotY + 1
+            }
+            
+        }
     }
     countFrames += 1
 
@@ -323,9 +336,14 @@ function invadeSpace() {
     c.fillStyle='grey'
     for (let i = 0; i < 500; i++) {
         if (i % 2 === 0) {
-            c.fillRect(i * blockSize, (cols - 9)*blockSize, blockSize, blockSize)
+            c.fillRect(i * blockSize, (cols - 9) * blockSize, blockSize, blockSize)
         }
     }
+    c.fillStyle='red'
+    c.fillRect(shotX * blockSize, hitMark * blockSize, blockSize * 125, blockSize)
+    c.fillRect(0, alienY * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY - 7) * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY + 20) * blockSize, blockSize * 3, blockSize)
     c.stroke()
     
 }
