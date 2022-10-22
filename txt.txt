@@ -87,3 +87,32 @@ if (shotX > -54 && shotX < -33) {
     c.fillRect(4 * blockSize, 8 * blockSize, 2 * blockSize, blockSize)
     c.fillRect(7 * blockSize, 8 * blockSize, 2 * blockSize, blockSize)
     c.stroke
+
+
+    c.beginPath
+    c.fillStyle='red'
+    c.fillRect(9 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillRect(9 * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
+    c.fillRect(30 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillRect((cols - 9) * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillRect((cols - 9) * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
+    c.fillRect((cols - 30) * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillRect(52 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillRect(52 * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
+    c.fillRect(73 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
+    c.fillStyle='grey'
+    for (let i = 0; i < 500; i++) {
+        if (i % 2 === 0) {
+            c.fillRect(i * blockSize, (cols - 9) * blockSize, blockSize, blockSize)
+        }
+    }
+    c.fillStyle='red'
+    c.fillRect((moveAlien + (15.5 * 2) + 0.75) * blockSize, alienY * blockSize, blockSize, blockSize)
+    c.fillRect((moveAlien + (15.5 * 2) + 8 + 0.75) * blockSize, alienY * blockSize, blockSize, blockSize)
+    c.fillRect(0, alienY * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY - 7) * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY + 3) * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY + 10) * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY + 13) * blockSize, blockSize * 3, blockSize)
+    c.fillRect(0, (alienY + 20) * blockSize, blockSize * 3, blockSize)
+    c.stroke()

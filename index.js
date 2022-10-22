@@ -103,7 +103,21 @@ function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, a
         alienX += 1
     }
     c.stroke
-    
+}
+
+let topAliensLife = [1, 2, 3, 4, 5, 6]
+let midAliensLife = [1, 2, 3, 4, 5, 6]
+let bottomAliensLife = [1, 2, 3, 4, 5, 6]
+
+function hitAlien(row, distApart, width, align) {
+    for (let i = 0; i <= 5; i++) {
+        if (row[i] !== 0 &&
+            shotX + Math.round(cols/2) >= moveAlien + (distApart * i) + align && 
+            shotX + Math.round(cols/2) <= moveAlien + (distApart * i) + width + align) {
+                hit = true
+                row[i] = 0
+        }
+    }
 }
 
 let playerRight = false
@@ -207,7 +221,6 @@ for (let i = 0; i < barrierArray.length; i++) {
 
 let playerX = 0
 let countFrames = 0
-let hitMark = 0 
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -311,40 +324,31 @@ function invadeSpace() {
         }
 
         if (shotX + Math.round(cols/2) >= moveAlien && shotX + Math.round(cols/2) <= moveAlien + 86) {
-            if (rows - shotY >= alienY - 7 && rows - shotY <= alienY + 20) {
-                hitMark =rows -  shotY
+
+            if (rows - shotY >= alienY - 7 && rows - shotY <= alienY) {
+                hitAlien(topAliensLife, 15.5, 8, 0.75)
             }
-            else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY + 20) {
-                hitMark =rows - shotY + 1
+            else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY) {
+                hitAlien(topAliensLife, 15.5, 8, 0.75)
             }
+
+                if (rows - shotY >= alienY + 3 && rows - shotY <= alienY + 10) {
+                    hitAlien(midAliensLife, 15, 11, 0.5)
+                }
+                else if (rows - shotY + 1 >= alienY + 3 && rows - shotY + 1 <= alienY + 10) {
+                    hitAlien(midAliensLife, 15, 11, 0.5)
+                }
+
+                    if (rows - shotY >= alienY + 13 && rows - shotY <= alienY + 20) {
+                        hitAlien(bottomAliensLife, 15, 12, 0)
+                    }
+                    else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
+                        hitAlien(bottomAliensLife, 15, 12, 0)
+                    }
             
         }
     }
     countFrames += 1
-
-    c.beginPath
-    c.fillStyle='red'
-    c.fillRect(9 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillRect(9 * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
-    c.fillRect(30 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillRect((cols - 9) * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillRect((cols - 9) * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
-    c.fillRect((cols - 30) * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillRect(52 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillRect(52 * blockSize, (rows - 21) * blockSize, blockSize, blockSize)
-    c.fillRect(73 * blockSize, (rows - 10) * blockSize, blockSize, blockSize)
-    c.fillStyle='grey'
-    for (let i = 0; i < 500; i++) {
-        if (i % 2 === 0) {
-            c.fillRect(i * blockSize, (cols - 9) * blockSize, blockSize, blockSize)
-        }
-    }
-    c.fillStyle='red'
-    c.fillRect(shotX * blockSize, hitMark * blockSize, blockSize * 125, blockSize)
-    c.fillRect(0, alienY * blockSize, blockSize * 3, blockSize)
-    c.fillRect(0, (alienY - 7) * blockSize, blockSize * 3, blockSize)
-    c.fillRect(0, (alienY + 20) * blockSize, blockSize * 3, blockSize)
-    c.stroke()
     
 }
 invadeSpace()
