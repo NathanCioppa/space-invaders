@@ -41,19 +41,19 @@ function barriers(barrier, barrierArray, n, y) {
 }
 
 function hitBarrier(checkBarrier, clearBarrier) {
-            for (let i = 11; i <= 20; i++) {
-                if (shotY === i && clearBarrier.includes(shotX + checkBarrier) === false) {
-                    hit = true
-                    clearBarrier.push(shotX + checkBarrier)
-                    i = 22
-                }
-                else if(shotY - 1 === i && clearBarrier.includes(shotX + checkBarrier) === false) {
-                    hit = true
-                    clearBarrier.push(shotX + checkBarrier)
-                    i = 22
-                }
-                checkBarrier += 20
-            }
+    for (let i = 11; i <= 20; i++) {
+        if (shotY === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+            hit = true
+            clearBarrier.push(shotX + checkBarrier)
+            i = 22
+        }
+        else if (shotY - 1 === i && clearBarrier.includes(shotX + checkBarrier) === false) {
+            hit = true
+            clearBarrier.push(shotX + checkBarrier)
+            i = 22
+        }
+        checkBarrier += 20
+    }
 }
 
 function drawAlien(x, y, n, alienArray) {
@@ -72,21 +72,22 @@ let alienY
 let moveAlien = 0
 let pose = 1
 
-function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align) {
+function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align, row) {
     alienY = dy
     alienX = 1 + moveAlien
     if (countFrames % 100 === 0 && countFrames > 0) {
         moveAlien += d
         pose += 1
     }
+
     if (alienX > 37 && d > 0) {
         d = -d
         dy += 10
     }
-    if (alienX < 2 && d < 0) {
-        d = -d
-        dy += 10
-    }
+        if (alienX < 2 && d < 0) {
+            d = -d
+            dy += 10
+        }
 
     c.beginPath
     c.fillStyle='green'
@@ -97,9 +98,10 @@ function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, a
             alienX = 1 + moveAlien
         }
         for (i = 0; i <= 5; i++) {
-            drawAlien((alienX + align) + (i * distApart), alienY + distFromTop, ii, alienArray)
+            if (row[i] !== 0) {
+                drawAlien((alienX + align) + (i * distApart), alienY + distFromTop, ii, alienArray)
+            }   
         }
-        
         alienX += 1
     }
     c.stroke
@@ -124,11 +126,11 @@ let playerRight = false
 let playerLeft = false
 let fire = false
 addEventListener('keydown', (e) => {
-    if (e.key === 'd' || e.key === 'ArrowRight') {
+    if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') {
         playerRight = true
         playerLeft = false
     }
-    if (e.key === 'a' || e.key === 'ArrowLeft') {
+    if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') {
         playerLeft = true
         playerRight = false
     }
@@ -138,10 +140,10 @@ addEventListener('keydown', (e) => {
     }
 })
 addEventListener('keyup', (e) => {
-    if (e.key === 'd' || e.key === 'ArrowRight') {
+    if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') {
         playerRight = false
     }
-    if (e.key === 'a' || e.key === 'ArrowLeft') {
+    if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') {
         playerLeft = false
     }
 })
@@ -231,47 +233,47 @@ function invadeSpace() {
     if (playerRight === true && playerX < Math.round(cols/2) - 6) {
         playerX += 1
     }
-    if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
-        playerX += -1
-    }
+        if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
+            playerX += -1
+        }
     drawPlayer(playerX)
 
     if (pose % 2 !== 0) {
         alienTop[15] = 41; alienTop[16] = 43; alienTop[17] = 44; alienTop[18] = 46
         alienTop[20] = 48; alienTop[23] = 55
         alienTop[24] = 57; alienTop[25] = 57; alienTop[28] = 62; alienTop[29] = 62
-        moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+        moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
 
         alienMiddle[9] = 11; alienMiddle[17] = 21
         alienMiddle[18] = 22; alienMiddle[21] = 32
         alienMiddle[22] = 33; alienMiddle[25] = 43
         alienMiddle[26] = 56; alienMiddle[27] = 64
         alienMiddle[36] = 78; alienMiddle[39] = 82; alienMiddle[40] = 82; alienMiddle[42] = 86;
-        moveAliens(88, 11, 15, 10, alienMiddle, 0)
+        moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
 
         alienBottom[16] = 61; alienBottom[19] = 70
         alienBottom[23] = 75; alienBottom[26] = 80
         alienBottom[28] = 84; alienBottom[29] = 85; alienBottom[34] = 94; alienBottom[35] = 95
-        moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+        moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
         
     }
     else if (pose % 2 === 0) {
         alienTop[15] = 42; alienTop[16] = 51; alienTop[17] = 52; alienTop[18] = 45
         alienTop[20] = 49; alienTop[23] = 54
         alienTop[24] = 56; alienTop[25] = 58; alienTop[28] = 61; alienTop[29] = 63
-        moveAliens(64, 8, 15.5, 0, alienTop, 0.25)
+        moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
         
         alienMiddle[9] = 66; alienMiddle[17] = 76
         alienMiddle[18] = 55; alienMiddle[21] = 23
         alienMiddle[22] = 55; alienMiddle[25] = 65
         alienMiddle[26] = 55; alienMiddle[27] = 65
         alienMiddle[36] = 80; alienMiddle[39] = 81; alienMiddle[40] = 83; alienMiddle[42] = 84;
-        moveAliens(88, 11, 15, 10, alienMiddle, 0)
+        moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
 
         alienBottom[16] = 62; alienBottom[19] = 69
         alienBottom[23] = 73; alienBottom[26] = 82
         alienBottom[28] = 86; alienBottom[29] = 87; alienBottom[34] = 92; alienBottom[35] = 93
-        moveAliens(96, 12, 15, 20, alienBottom, -0.5)
+        moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
         
     }
 
@@ -316,39 +318,35 @@ function invadeSpace() {
         if (shotX > -54 && shotX < -33) {
             hitBarrier(53, clearBarrierLeft)
         }
-        if (shotX > -11 && shotX < 10) {
-            hitBarrier(10, clearBarrierMid)
-        }
-        if (shotX > 32 && shotX < 53) {
-            hitBarrier(-33, clearBarrierRight)
-        }
-
-        if (shotX + Math.round(cols/2) >= moveAlien && shotX + Math.round(cols/2) <= moveAlien + 86) {
-
-            if (rows - shotY >= alienY - 7 && rows - shotY <= alienY) {
-                hitAlien(topAliensLife, 15.5, 8, 0.75)
+            if (shotX > -11 && shotX < 10) {
+                hitBarrier(10, clearBarrierMid)
             }
-            else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY) {
-                hitAlien(topAliensLife, 15.5, 8, 0.75)
-            }
-
-                if (rows - shotY >= alienY + 3 && rows - shotY <= alienY + 10) {
-                    hitAlien(midAliensLife, 15, 11, 0.5)
-                }
-                else if (rows - shotY + 1 >= alienY + 3 && rows - shotY + 1 <= alienY + 10) {
-                    hitAlien(midAliensLife, 15, 11, 0.5)
+                if (shotX > 32 && shotX < 53) {
+                    hitBarrier(-33, clearBarrierRight)
                 }
 
-                    if (rows - shotY >= alienY + 13 && rows - shotY <= alienY + 20) {
-                        hitAlien(bottomAliensLife, 15, 12, 0)
-                    }
-                    else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
-                        hitAlien(bottomAliensLife, 15, 12, 0)
-                    }
-            
+        if (rows - shotY >= alienY - 7 && rows - shotY <= alienY) {
+            hitAlien(topAliensLife, 15.5, 8, 0.75)
         }
+        else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY) {
+            hitAlien(topAliensLife, 15.5, 8, 0.75)
+        }
+
+            if (rows - shotY >= alienY + 3 && rows - shotY <= alienY + 10) {
+                hitAlien(midAliensLife, 15, 11, 0.5)
+            }
+            else if (rows - shotY + 1 >= alienY + 3 && rows - shotY + 1 <= alienY + 10) {
+                hitAlien(midAliensLife, 15, 11, 0.5)
+            }
+
+                if (rows - shotY >= alienY + 13 && rows - shotY <= alienY + 20) {
+                    hitAlien(bottomAliensLife, 15, 12, 0)
+                }
+                else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
+                    hitAlien(bottomAliensLife, 15, 12, 0)
+                }
     }
+
     countFrames += 1
-    
 }
 invadeSpace()
