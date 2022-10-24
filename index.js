@@ -31,6 +31,19 @@ function shoot(x, y) {
     c.stroke()
 }
 
+let alienShotCol
+let alienShotRow
+let alignShotX
+let alienShotX = 1
+let alienShotY = 1
+
+function alienShoot(x, y) {
+    c.beginPath
+    c.fillStyle='blue'
+    c.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+    c.stroke()
+}
+
 function barriers(barrier, barrierArray, n, y) {
     c.fillRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
         for (let i = 0; i < barrierArray.length; i++) {
@@ -189,6 +202,7 @@ function hitAlien(row, distApart, width, align) {
 let playerRight = false
 let playerLeft = false
 let fire = false
+let alienFire = false
 addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') {
         playerRight = true
@@ -375,6 +389,40 @@ function invadeSpace() {
                 else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
                     hitAlien(bottomAliensLife, 15, 12, 0)
                 }
+    }
+
+    if (alienFire === false) {
+        alienShotCol = Math.floor(Math.random() * 6)
+
+        if (topAliensLife[alienShotCol] !== 0 || midAliensLife[alienShotCol] !== 0 || bottomAliensLife[alienShotCol] !== 0) {
+            if (bottomAliensLife[alienShotCol] !== 0) {
+                alienShotX = alienX + (((bottomAliensLife[alienShotCol] - 1) * 15) - 8)
+                alienShotY = alienY + 21
+                alienFire = true
+            }
+            else if (midAliensLife[alienShotCol] !== 0) {
+                alienShotX = alienX + (((midAliensLife[alienShotCol] - 1) * 15) - 8)
+                alienShotY = alienY + 11
+                alienFire = true
+            }
+            else if (topAliensLife[alienShotCol] !== 0) {
+                if (topAliensLife[alienShotCol] < 4) {
+                    alienShotX = alienX + (((topAliensLife[alienShotCol] - 1) * 15) - 8)
+                }
+                else {
+                    alienShotX = alienX + (((topAliensLife[alienShotCol] - 1) * 15) - 7)
+                }
+                alienShotY = alienY + 1
+                alienFire = true
+            }
+        }
+    }
+    if (alienFire === true) {
+        alienShoot(alienShotX, alienShotY)
+        alienShotY += 1
+        if (alienShotY >= rows) {
+            alienFire = false
+        }
     }
     countFrames += 1
 }

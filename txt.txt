@@ -116,3 +116,37 @@ if (shotX > -54 && shotX < -33) {
     c.fillRect(0, (alienY + 13) * blockSize, blockSize * 3, blockSize)
     c.fillRect(0, (alienY + 20) * blockSize, blockSize * 3, blockSize)
     c.stroke()
+
+
+
+    if (alienFire === false) {
+        alienShotCol = Math.floor(Math.random() * 6)
+
+        if (topAliensLife[alienShotCol] !== 0 || midAliensLife[alienShotCol] !== 0 || bottomAliensLife[alienShotCol] !== 0) {
+            if (bottomAliensLife[alienShotCol] !== 0) {
+                alienShotY = 48
+                alignShotX = 6
+                alienFire = true
+            }
+            else if (midAliensLife[alienShotCol] !== 0) {
+                alienShotY = 58
+                alignShotX = 6
+                alienFire = true
+            }
+            else if (topAliensLife[alienShotCol] !== 0) {
+                alienShotY = 68
+                alignShotX = 2
+                if (topAliensLife[alienShotCol] < 4) {
+                    alignShotX = 5
+                } else { alignShotX = 7 }
+                alienFire = true
+            }
+        }
+    }
+    if (alienFire === true) {
+        alienShoot(alienShotCol, alignShotX, alienShotY)
+        alienShotY += 1
+        if (alienShotY >= rows) {
+            alienFire = false
+        }
+    }
