@@ -38,9 +38,18 @@ let alienShotX = 1
 let alienShotY = 1
 
 function alienShoot(x, y) {
+    let draw = 0
     c.beginPath
     c.fillStyle='blue'
-    c.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+    for (i = 0; i < 4; i++) {
+        if (i % 2 === 0) {
+            c.fillRect(x * blockSize, (y + draw) * blockSize, blockSize, blockSize)
+        }
+        if (i % 2 !== 0) {
+            c.fillRect((x + 1) * blockSize, (y + draw) * blockSize, blockSize, blockSize)
+        }
+        draw += 1
+    }
     c.stroke()
 }
 
@@ -301,6 +310,7 @@ for (let i = 0; i < barrierArray.length; i++) {
 
 let playerX = 0
 let countFrames = 0
+let hold = 0
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -392,6 +402,10 @@ function invadeSpace() {
     }
 
     if (alienFire === false) {
+        hold += 1
+    }
+
+    if (alienFire === false && hold >= 20) {
         alienShotCol = Math.floor(Math.random() * 6)
 
         if (topAliensLife[alienShotCol] !== 0 || midAliensLife[alienShotCol] !== 0 || bottomAliensLife[alienShotCol] !== 0) {
@@ -399,11 +413,13 @@ function invadeSpace() {
                 alienShotX = alienX + (((bottomAliensLife[alienShotCol] - 1) * 15) - 8)
                 alienShotY = alienY + 21
                 alienFire = true
+                hold = 0
             }
             else if (midAliensLife[alienShotCol] !== 0) {
                 alienShotX = alienX + (((midAliensLife[alienShotCol] - 1) * 15) - 8)
                 alienShotY = alienY + 11
                 alienFire = true
+                hold = 0
             }
             else if (topAliensLife[alienShotCol] !== 0) {
                 if (topAliensLife[alienShotCol] < 4) {
@@ -414,9 +430,11 @@ function invadeSpace() {
                 }
                 alienShotY = alienY + 1
                 alienFire = true
+                hold = 0
             }
         }
     }
+    
     if (alienFire === true) {
         alienShoot(alienShotX, alienShotY)
         alienShotY += 1
