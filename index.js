@@ -62,6 +62,7 @@ function barriers(barrier, barrierArray, n, y) {
         }
 }
 
+
 function hitBarrier(checkBarrier, clearBarrier) {
     for (let i = 11; i <= 20; i++) {
         if (shotY === i && clearBarrier.includes(shotX + checkBarrier) === false) {
@@ -75,6 +76,24 @@ function hitBarrier(checkBarrier, clearBarrier) {
             i = 22
         }
         checkBarrier += 20
+    }
+}
+
+function hitBarrierAlien(checkBarrier, clearBarrier) {
+    let oneNinetyNine = 199
+    for (let i = 20; i > 10; i--) {
+        if (alienShotY + 3 === rows - i && (
+            clearBarrier.includes(oneNinetyNine - (checkBarrier - alienShotX)) === false
+            )) {
+                clearBarrier.push(oneNinetyNine - (checkBarrier - alienShotX), (oneNinetyNine - 20) - (checkBarrier - alienShotX))
+                if (alienShotX > checkBarrier - 18 && alienShotX < checkBarrier) {
+                    clearBarrier.push(oneNinetyNine - ((checkBarrier - 1) - alienShotX),  (oneNinetyNine - 20) - ((checkBarrier - 1) - alienShotX))
+                }
+                    i = 9
+                    alienFire = false
+                    hold = 0
+        }
+        oneNinetyNine -= 20
     }
 }
 
@@ -400,6 +419,26 @@ function invadeSpace() {
                     hitAlien(bottomAliensLife, 15, 12, 0)
                 }
     }
+    
+    if (alienFire === true) {
+        alienShoot(alienShotX, alienShotY)
+        
+        if (alienShotY >= rows) {
+            alienFire = false
+        }
+
+        if (alienShotX >= 9 && alienShotX < 30) {
+            hitBarrierAlien(29, clearBarrierLeft)
+        }
+            if (alienShotX >= 52 && alienShotX < 73) {
+                hitBarrierAlien(72, clearBarrierMid)
+            }
+                if (alienShotX >= 95 && alienShotX < 116) {
+                    hitBarrierAlien(115, clearBarrierRight)
+                }
+        
+        alienShotY += 1
+    }
 
     if (alienFire === false) {
         hold += 1
@@ -435,13 +474,6 @@ function invadeSpace() {
         }
     }
     
-    if (alienFire === true) {
-        alienShoot(alienShotX, alienShotY)
-        alienShotY += 1
-        if (alienShotY >= rows) {
-            alienFire = false
-        }
-    }
     countFrames += 1
 }
 invadeSpace()
