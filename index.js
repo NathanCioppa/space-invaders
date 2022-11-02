@@ -53,6 +53,21 @@ function alienShoot(x, y) {
     c.stroke()
 }
 
+let lives = 3
+
+function hitPlayer() {
+    playerX = 0
+    alienFire = false
+    hold = -40
+    lives -= 1
+
+    if (lives < 1) {
+        loseCondition = true
+        console.log(countFrames)
+    }
+    
+}
+
 function barriers(barrier, barrierArray, n, y) {
     c.fillRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
         for (let i = 0; i < barrierArray.length; i++) {
@@ -330,9 +345,16 @@ for (let i = 0; i < barrierArray.length; i++) {
 let playerX = 0
 let countFrames = 0
 let hold = 0
+let loseCondition = false
+let winConsition = false
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
+
+    if (loseCondition === true) {
+        return
+    }
+
     c.beginPath
     c.clearRect(0, 0, cols * blockSize, rows * blockSize)
     c.stroke()
@@ -343,7 +365,10 @@ function invadeSpace() {
         if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
             playerX += -1
         }
-    drawPlayer(playerX)
+    if (loseCondition === false) {
+        drawPlayer(playerX)
+    }
+    
 
     alienAnimations()
     moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
@@ -436,6 +461,12 @@ function invadeSpace() {
                 if (alienShotX >= 95 && alienShotX < 116) {
                     hitBarrierAlien(115, clearBarrierRight)
                 }
+
+        if (alienShotX >= playerX + Math.round(cols / 2) - 5 && alienShotX <= playerX + Math.round(cols / 2) + 4 && 
+            alienShotY >= rows - 8 && alienShotY <= rows - 2)
+        {
+            hitPlayer()
+        }
         
         alienShotY += 1
     }
