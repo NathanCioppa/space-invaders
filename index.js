@@ -132,6 +132,32 @@ let rightBound = 37
 let leftBound = 2
 
 function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, align, row) {
+
+    let deathCount = 0
+    let bottomBound = 20
+
+    for (i = 0; i < 6; i++) {
+        if (bottomAliensLife[i] === 0) {
+            deathCount += 1
+        }
+        if (deathCount > 5) {
+        bottomBound -= 10
+        
+            for (let i = 0; i < 6; i++) {
+                if (midAliensLife[i] === 0) {
+                    deathCount += 1
+                }
+                if (deathCount > 11) {
+                    bottomBound -= 10
+                }
+            }
+        }
+    }
+    
+    if (bottomBound + alienY > rows - 20) {
+        loseCondition = true
+    }
+
     alienY = dy
     alienX = 1 + moveAlien
     if (countFrames % alienSpeed === 0 && countFrames > 0) {
@@ -346,34 +372,25 @@ let playerX = 0
 let countFrames = 0
 let hold = 0
 let loseCondition = false
-let winConsition = false
+let winCondition = false
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
 
     if (loseCondition === true) {
+        pose += 1
+        alienAnimations()
+        for (i = 0; i <= 5; i++) {
+            if (topAliensLife[i] !== 0) {
+                drawAlien((alienX + align) + (i * distApart), alienY + distFromTop, ii, alienArray)
+            }   
+        }
         return
     }
 
     c.beginPath
     c.clearRect(0, 0, cols * blockSize, rows * blockSize)
     c.stroke()
-    
-    if (playerRight === true && playerX < Math.round(cols/2) - 6) {
-        playerX += 1
-    }
-        if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
-            playerX += -1
-        }
-    if (loseCondition === false) {
-        drawPlayer(playerX)
-    }
-    
-
-    alienAnimations()
-    moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
-    moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
-    moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
 
     c.beginPath
     c.fillStyle='orange'
@@ -401,6 +418,23 @@ function invadeSpace() {
         barrierRX += 1
     }
     c.stroke()
+    
+    if (playerRight === true && playerX < Math.round(cols/2) - 6) {
+        playerX += 1
+    }
+        if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
+            playerX += -1
+        }
+    if (loseCondition === false) {
+        drawPlayer(playerX)
+    }
+    
+
+    alienAnimations()
+    moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
+    moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
+    moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
+
 
     if (fire === true) {
         ready = false
