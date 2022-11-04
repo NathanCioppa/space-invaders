@@ -19,6 +19,13 @@ function drawPlayer(x) {
     c.stroke()
 }
 
+let score = 0
+
+function keepScore(addPoints) {
+    score += addPoints
+    document.getElementById('score').value = score
+}
+
 let shotX = 0
 let shotY = 10
 let ready = true
@@ -28,6 +35,31 @@ function shoot(x, y) {
     c.beginPath
     c.fillStyle='black'
     c.fillRect(((x + 0.75)* blockSize), y * blockSize, 0.5 * blockSize, 3 * blockSize)
+    c.stroke()
+}
+
+function hitAnimation(x, y, state) {
+    c.beginPath()
+    c.fillstyle='red'
+    if (state === 0) {
+        c.fillRect((x - 1) * blockSize, y * blockSize, blockSize * 3, blockSize)
+        c.fillRect(x * blockSize, (y - 1) * blockSize, blockSize, blockSize * 3)
+    }
+        else if (state === 1 || state === 2) {
+            c.fillRect(x * blockSize, x * blockSize, blockSize, blockSize)
+            c.fillRect((x - 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
+            c.fillRect((x - 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
+            c.fillRect((x + 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
+            c.fillRect((x + 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
+
+            if (state === 2) {
+                c.fillRect((x - 2) * blockSize, y * blockSize, blockSize, blockSize)
+                c.fillRect(x * blockSize, (y - 2) * blockSize, blockSize, blockSize)
+                c.fillRect((x + 2) * blockSize, y * blockSize, blockSize, blockSize)
+                c.fillRect(x * blockSize, (y + 2) * blockSize, blockSize, blockSize)
+            }
+        }
+    
     c.stroke()
 }
 
@@ -63,7 +95,6 @@ function hitPlayer() {
 
     if (lives < 1) {
         loseCondition = true
-        console.log(countFrames)
     }
     
 }
@@ -232,7 +263,7 @@ let bottomAliensLife = [1, 2, 3, 4, 5, 6]
 let alienSpeed = 50
 let kills = 0
 
-function hitAlien(row, distApart, width, align) {
+function hitAlien(row, distApart, width, align, points) {
     for (let i = 0; i <= 5; i++) {
         if (row[i] !== 0 &&
             shotX + Math.round(cols/2) >= moveAlien + (distApart * i) + align && 
@@ -240,6 +271,7 @@ function hitAlien(row, distApart, width, align) {
                 hit = true
                 row[i] = 0
                 kills += 1
+                keepScore(points)
                 
                 if (kills > 0 && kills % 3 === 0 && kills <= 12) {
                     alienSpeed -= 10
@@ -373,18 +405,19 @@ let countFrames = 0
 let hold = 0
 let loseCondition = false
 let winCondition = false
+finalScore = 0
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
 
     if (loseCondition === true) {
-        pose += 1
-        alienAnimations()
-        for (i = 0; i <= 5; i++) {
-            if (topAliensLife[i] !== 0) {
-                drawAlien((alienX + align) + (i * distApart), alienY + distFromTop, ii, alienArray)
-            }   
-        }
+        document.getElementById('time').value = countFrames
+        return
+    }
+    if (winCondition === true) {
+        document.getElementById('time').value = countFrames
+        finalScore = (5000 - countFrames) + score
+        document.getElementById('final-score').value = finalScore
         return
     }
 
@@ -429,6 +462,21 @@ function invadeSpace() {
         drawPlayer(playerX)
     }
     
+    let deaths = 0
+    for (let i = 0; i < 6; i++) {
+        if (bottomAliensLife[i] === 0) {
+            deaths += 1
+        }
+        if (midAliensLife[i] === 0) {
+            deaths += 1
+        }
+        if (topAliensLife[i] === 0) {
+            deaths += 1
+        }
+    }
+    if (deaths >= 18) {
+        winCondition = true
+    }
 
     alienAnimations()
     moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
@@ -447,6 +495,16 @@ function invadeSpace() {
             hit = false
         }
 
+        if (shotX + (cols / 2) >= alienShotX - 2 && shotX + (cols / 2) <= alienShotX + 2 && rows - shotY <= alienShotY + 3) {
+            hitAnimation(shotX + (cols / 2), rows - shotY, 0)
+            fire = false
+            shotY = 10
+            ready = true
+            alienFire = false
+            
+            keepScore(10)
+        }
+
         if (shotX > -54 && shotX < -33) {
             hitBarrier(53, clearBarrierLeft)
         }
@@ -458,24 +516,24 @@ function invadeSpace() {
                 }
 
         if (rows - shotY >= alienY - 7 && rows - shotY <= alienY) {
-            hitAlien(topAliensLife, 15.5, 8, 0.75)
+            hitAlien(topAliensLife, 15.5, 8, 0.75, 500)
         }
         else if (rows - shotY + 1 >= alienY - 7 && rows - shotY + 1 <= alienY) {
-            hitAlien(topAliensLife, 15.5, 8, 0.75)
+            hitAlien(topAliensLife, 15.5, 8, 0.75, 500)
         }
 
             if (rows - shotY >= alienY + 3 && rows - shotY <= alienY + 10) {
-                hitAlien(midAliensLife, 15, 11, 0.5)
+                hitAlien(midAliensLife, 15, 11, 0.5, 300)
             }
             else if (rows - shotY + 1 >= alienY + 3 && rows - shotY + 1 <= alienY + 10) {
-                hitAlien(midAliensLife, 15, 11, 0.5)
+                hitAlien(midAliensLife, 15, 11, 0.5, 300)
             }
 
                 if (rows - shotY >= alienY + 13 && rows - shotY <= alienY + 20) {
-                    hitAlien(bottomAliensLife, 15, 12, 0)
+                    hitAlien(bottomAliensLife, 15, 12, 0, 100)
                 }
                 else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
-                    hitAlien(bottomAliensLife, 15, 12, 0)
+                    hitAlien(bottomAliensLife, 15, 12, 0, 100)
                 }
     }
     
@@ -538,7 +596,6 @@ function invadeSpace() {
             }
         }
     }
-    
     countFrames += 1
 }
 invadeSpace()
