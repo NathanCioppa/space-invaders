@@ -38,25 +38,39 @@ function shoot(x, y) {
     c.stroke()
 }
 
-function hitAnimation(x, y, state) {
-    c.beginPath()
-    c.fillstyle='red'
-    if (state === 0) {
-        c.fillRect((x - 1) * blockSize, y * blockSize, blockSize * 3, blockSize)
-        c.fillRect(x * blockSize, (y - 1) * blockSize, blockSize, blockSize * 3)
-    }
-        else if (state === 1 || state === 2) {
-            c.fillRect(x * blockSize, x * blockSize, blockSize, blockSize)
-            c.fillRect((x - 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
-            c.fillRect((x - 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
-            c.fillRect((x + 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
-            c.fillRect((x + 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
+let state = 0
+let explosionColors = ['red', 'red', 'red', 'red', 'red',  'orange', 'orange', 'yellow']
 
-            if (state === 2) {
+function hitAnimation(x, y) {
+    c.beginPath()
+    c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+    if (state < 5) {
+        c.fillRect((x - 1) * blockSize, y * blockSize, blockSize * 3, blockSize)
+        c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+        c.fillRect(x * blockSize, (y - 1) * blockSize, blockSize, blockSize * 3)
+        c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+    }
+        else if (state >= 5 ) {
+            c.fillRect(x * blockSize, y * blockSize, blockSize, blockSize)
+            c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+            c.fillRect((x - 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
+            c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+            c.fillRect((x - 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
+            c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+            c.fillRect((x + 1) * blockSize, (y - 1) * blockSize, blockSize, blockSize)
+            c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+            c.fillRect((x + 1) * blockSize, (y + 1) * blockSize, blockSize, blockSize)
+            c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
+
+            if (state > 10) {
                 c.fillRect((x - 2) * blockSize, y * blockSize, blockSize, blockSize)
+                c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
                 c.fillRect(x * blockSize, (y - 2) * blockSize, blockSize, blockSize)
+                c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
                 c.fillRect((x + 2) * blockSize, y * blockSize, blockSize, blockSize)
+                c.fillStyle=explosionColors[Math.floor(Math.random() * explosionColors.length)]
                 c.fillRect(x * blockSize, (y + 2) * blockSize, blockSize, blockSize)
+                c.clearRect(x * blockSize, y * blockSize, blockSize, blockSize)
             }
         }
     
@@ -92,6 +106,10 @@ function hitPlayer() {
     alienFire = false
     hold = -40
     lives -= 1
+
+    explode = true
+    explodeX = alienShotX - (cols / 2)
+    explodeY = rows - alienShotY - 3
 
     if (lives < 1) {
         loseCondition = true
@@ -135,9 +153,12 @@ function hitBarrierAlien(checkBarrier, clearBarrier) {
                 if (alienShotX > checkBarrier - 18 && alienShotX < checkBarrier) {
                     clearBarrier.push(oneNinetyNine - ((checkBarrier - 1) - alienShotX),  (oneNinetyNine - 20) - ((checkBarrier - 1) - alienShotX))
                 }
-                    i = 9
-                    alienFire = false
-                    hold = 0
+                i = 9
+                alienFire = false
+                hold = 0
+                explode = true
+                explodeX = alienShotX - (cols / 2)
+                explodeY = rows - alienShotY - 3
         }
         oneNinetyNine -= 20
     }
@@ -272,6 +293,9 @@ function hitAlien(row, distApart, width, align, points) {
                 row[i] = 0
                 kills += 1
                 keepScore(points)
+                explode = true
+                explodeX = shotX
+                explodeY = shotY
                 
                 if (kills > 0 && kills % 3 === 0 && kills <= 12) {
                     alienSpeed -= 10
@@ -405,7 +429,10 @@ let countFrames = 0
 let hold = 0
 let loseCondition = false
 let winCondition = false
-finalScore = 0
+let finalScore = 0
+let explode = false
+let explodeX
+let explodeY
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -488,7 +515,16 @@ function invadeSpace() {
         ready = false
         shoot(shotX + (cols / 2), rows - shotY)
         shotY += 2
-        if (rows - shotY < 0 || hit === true) {
+        if (rows - shotY < 0) {
+            explodeX = shotX
+            explodeY = shotY - 2
+            explode = true
+            fire = false
+            shotY = 10
+            ready = true
+            hit = false
+        }
+        if (hit === true) {
             fire = false
             shotY = 10
             ready = true
@@ -496,7 +532,9 @@ function invadeSpace() {
         }
 
         if (shotX + (cols / 2) >= alienShotX - 2 && shotX + (cols / 2) <= alienShotX + 2 && rows - shotY <= alienShotY + 3) {
-            hitAnimation(shotX + (cols / 2), rows - shotY, 0)
+            explodeX = shotX
+            explodeY = shotY
+            explode = true
             fire = false
             shotY = 10
             ready = true
@@ -595,6 +633,15 @@ function invadeSpace() {
                 hold = 0
             }
         }
+    }
+
+    if (explode === true || state !== 0) {
+        hitAnimation(explodeX + (cols / 2), rows - explodeY, state)
+        state += 1
+        explode = false
+    }
+    if (state > 15) {
+        state = 0
     }
     countFrames += 1
 }
