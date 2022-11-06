@@ -245,7 +245,7 @@ function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, a
 }
 
 let bonusAliensLife = 1
-let bonusPosition = -500 + -Math.floor(Math.random() * 500)
+let bonusPosition = -800 + -Math.floor(Math.random() * 500)
 
 function moveBonus() {
     bonusPosition += 1
@@ -545,7 +545,10 @@ function invadeSpace() {
     moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
     moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
     moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
-    moveBonus()
+    if (bonusAliensLife !== 0) {
+        moveBonus()
+    }
+    
 
     if (fire === true) {
         ready = false
@@ -609,6 +612,27 @@ function invadeSpace() {
                 else if (rows - shotY + 1 >= alienY + 13 && rows - shotY + 1 <= alienY + 20) {
                     hitAlien(bottomAliensLife, 15, 12, 0, 100)
                 }
+
+                    if (rows - shotY <= 7 && rows - shotY >= 3 && shotX + Math.round(cols/2) <= bonusPosition && 
+                        shotX + Math.round(cols/2) >= bonusPosition - 16) 
+                    {
+                        keepScore(1000)
+                        bonusAliensLife = 0
+                        explodeX = shotX
+                        explodeY = shotY
+                        explode = true
+                        hit = true
+                    } 
+                    else if (rows - shotY + 1 <= 7 && rows - shotY + 1 >= 3 && shotX + Math.round(cols/2) <= bonusPosition && 
+                    shotX + Math.round(cols/2) >= bonusPosition - 16) 
+                    {
+                        keepScore(1000)
+                        bonusAliensLife = 0
+                        explodeX = shotX
+                        explodeY = shotY
+                        explode = true
+                        hit = true
+                    }
     }
     
     if (alienFire === true) {
