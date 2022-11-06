@@ -244,6 +244,31 @@ function moveAliens(alienArea, alienWidth, distApart, distFromTop, alienArray, a
     c.stroke
 }
 
+let bonusAliensLife = 1
+let bonusPosition = -500 + -Math.floor(Math.random() * 500)
+
+function moveBonus() {
+    bonusPosition += 1
+
+    let bonusY = 3
+    let bonusX = bonusPosition
+
+    c.beginPath()
+    c.fillStyle='red'
+    for (let i = 0; i < bonusAlienArray[bonusAlienArray.length - 1]; i++) {
+        if (i % 16 === 0) {
+            bonusY += 1
+            bonusX -= 16
+        }
+        if (bonusAlienArray.includes(i) === false) {
+            c.fillRect(bonusX * blockSize, bonusY * blockSize, blockSize, blockSize)
+        }
+        bonusX += 1
+    }
+    c.stroke()
+    
+}
+
 function alienAnimations() {
     if (pose % 2 !== 0) {
         alienTop[15] = 41; alienTop[16] = 43; alienTop[17] = 44; alienTop[18] = 46
@@ -281,6 +306,7 @@ function alienAnimations() {
 let topAliensLife = [1, 2, 3, 4, 5, 6]
 let midAliensLife = [1, 2, 3, 4, 5, 6]
 let bottomAliensLife = [1, 2, 3, 4, 5, 6]
+
 let alienSpeed = 50
 let kills = 0
 
@@ -409,6 +435,16 @@ const barrierArray =
     160, 179,
     180, 181, 198, 199]
 
+const bonusAlienArray = 
+    [0, 1, 2, 3, 4, 11, 12, 13, 14, 15,
+     16, 17, 18, 29, 30, 31,
+     32, 33, 46, 47,
+     48, 51, 54, 57, 60, 63,
+
+     80, 81, 85, 86, 89, 90, 94, 95,
+     96, 97, 98, 100, 101, 102, 103, 104, 105, 106, 107, 109, 110, 111
+    ]
+
 let clearBarrierLeft = new Array(barrierArray.length)
 for (let i = 0; i < barrierArray.length; i++) {
     clearBarrierLeft[i] = barrierArray[i]
@@ -509,7 +545,7 @@ function invadeSpace() {
     moveAliens(64, 8, 15.5, 0, alienTop, 0.25, topAliensLife)
     moveAliens(88, 11, 15, 10, alienMiddle, 0, midAliensLife)
     moveAliens(96, 12, 15, 20, alienBottom, -0.5, bottomAliensLife)
-
+    moveBonus()
 
     if (fire === true) {
         ready = false
