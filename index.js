@@ -1,16 +1,16 @@
-const canvas = document.querySelector('canvas')
+const mainCanvas = document.querySelector('#main-canvas')
 const cols = 125
 const rows = 125
 const blockSize = 4
-canvas.width = cols * blockSize
-canvas.height = rows * blockSize
-const c = canvas.getContext('2d')
+mainCanvas.width = cols * blockSize
+mainCanvas.height = rows * blockSize
+const c = mainCanvas.getContext('2d')
 
 function drawPlayer(x) {
     const startX = Math.round(cols / 2) - 4
     const startY = (rows - 3)
     c.beginPath
-    c.fillStyle='black'
+    c.fillStyle='rgb(0,255,0)'
     c.fillRect((startX + x) * blockSize, startY * blockSize, blockSize * 9, blockSize * 2)
     c.fillRect((startX + (x + 0.5)) * blockSize, (startY - 0.5) * blockSize, blockSize * 8, blockSize)
     c.fillRect((startX + (x + 1)) * blockSize, (startY - 1) * blockSize, blockSize * 7, blockSize)
@@ -23,7 +23,7 @@ let score = 0
 
 function keepScore(addPoints) {
     score += addPoints
-    document.getElementById('score').value = score
+    document.getElementById('score').value = 'POINTS: ' + score
 }
 
 let shotX = 0
@@ -33,9 +33,19 @@ let hit = false
 
 function shoot(x, y) {
     c.beginPath
-    c.fillStyle='black'
+    c.fillStyle='white'
     c.fillRect(((x + 0.75)* blockSize), y * blockSize, 0.5 * blockSize, 3 * blockSize)
     c.stroke()
+}
+
+let explode = false
+let explodeX
+let explodeY
+
+function exploooooosion(shotTypeX, shotTypeY, alignX, alignY) {
+    explodeX = shotTypeX + alignX
+    explodeY = shotTypeY + alignY
+    explode = true
 }
 
 let state = 0
@@ -86,7 +96,7 @@ let alienShotY = 1
 function alienShoot(x, y) {
     let draw = 0
     c.beginPath
-    c.fillStyle='blue'
+    c.fillStyle='white'
     for (i = 0; i < 4; i++) {
         if (i % 2 === 0) {
             c.fillRect(x * blockSize, (y + draw) * blockSize, blockSize, blockSize)
@@ -105,17 +115,37 @@ function hitPlayer() {
     playerX = 0
     alienFire = false
     hold = -40
+    exploooooosion(alienShotX, alienShotY, -(cols/2),  ((-(alienShotY * 2) - 3)-(-125)))
     lives -= 1
-
-    explode = true
-    explodeX = alienShotX - (cols / 2)
-    explodeY = rows - alienShotY - 3
-
+    drawLives(lives - 1)
+    document.getElementById('lives').value = lives
     if (lives < 1) {
         loseCondition = true
     }
     
 }
+
+document.querySelector('#lives-canvas').width = cols * blockSize
+document.querySelector('#lives-canvas').height = 5 * blockSize
+const lc = document.querySelector('#lives-canvas').getContext('2d')
+
+function drawLives(lives) {
+    let start = 10
+    lc.clearRect(0,0, cols * blockSize, 10 * blockSize)
+    for (let i = 1; i <= lives; i++) {
+    lc.beginPath()
+    
+    lc.fillStyle='rgb(0,255,0)'
+    lc.fillRect(((start * i) + 1) * blockSize, 3 * blockSize, 9 * blockSize, 2 * blockSize)
+    lc.fillRect(((start * i) + 1.5) * blockSize, 2.5 * blockSize, 8 * blockSize, blockSize)
+    lc.fillRect(((start * i) + 2) * blockSize, 2 * blockSize, 7 * blockSize, blockSize)
+    lc.fillRect(((start * i) + 4) * blockSize, 1 * blockSize, 3 * blockSize, blockSize)
+    lc.fillRect(((start * i) + 5) * blockSize, 0 * blockSize, blockSize, blockSize)
+    lc.stroke()
+    }
+    
+}
+drawLives(lives - 1)
 
 function barriers(barrier, barrierArray, n, y) {
     c.fillRect(barrier * blockSize, (rows - y) * blockSize, blockSize, blockSize)
@@ -156,9 +186,7 @@ function hitBarrierAlien(checkBarrier, clearBarrier) {
                 i = 9
                 alienFire = false
                 hold = 0
-                explode = true
-                explodeX = alienShotX - (cols / 2)
-                explodeY = rows - alienShotY - 3
+                exploooooosion(alienShotX, alienShotY, -(cols/2) + 0.5, ((-(alienShotY * 2) - 3)-(-125)))
         }
         oneNinetyNine -= 20
     }
@@ -179,7 +207,7 @@ let alienX
 let alienY
 let moveAlien = 0
 let pose = 1
-let alienColor = 'green'
+let alienColor = 'white'
 let rightBound = 37
 let leftBound = 2
 
@@ -466,9 +494,6 @@ let hold = 0
 let loseCondition = false
 let winCondition = false
 let finalScore = 0
-let explode = false
-let explodeX
-let explodeY
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
@@ -489,7 +514,7 @@ function invadeSpace() {
     c.stroke()
 
     c.beginPath
-    c.fillStyle='orange'
+    c.fillStyle='rgb(0,255,0)'
     
     let barrierY = 11
     let barrierLX = 10
@@ -521,6 +546,7 @@ function invadeSpace() {
         if (playerLeft === true && playerX > -Math.round(cols/2) + 4) {
             playerX += -1
         }
+
     if (loseCondition === false) {
         drawPlayer(playerX)
     }
@@ -555,9 +581,7 @@ function invadeSpace() {
         shoot(shotX + (cols / 2), rows - shotY)
         shotY += 2
         if (rows - shotY < 0) {
-            explodeX = shotX
-            explodeY = shotY - 2
-            explode = true
+            exploooooosion(shotX, shotY, 0, -2)
             fire = false
             shotY = 10
             ready = true
@@ -571,9 +595,7 @@ function invadeSpace() {
         }
 
         if (shotX + (cols / 2) >= alienShotX - 2 && shotX + (cols / 2) <= alienShotX + 2 && rows - shotY <= alienShotY + 3) {
-            explodeX = shotX
-            explodeY = shotY
-            explode = true
+            exploooooosion(shotX, shotY, 0, 0)
             fire = false
             shotY = 10
             ready = true
@@ -618,9 +640,7 @@ function invadeSpace() {
                     {
                         keepScore(1000)
                         bonusAliensLife = 0
-                        explodeX = shotX
-                        explodeY = shotY
-                        explode = true
+                        exploooooosion(shotX, shotY, 0, 0)
                         hit = true
                     } 
                     else if (rows - shotY + 1 <= 7 && rows - shotY + 1 >= 3 && shotX + Math.round(cols/2) <= bonusPosition && 
@@ -628,9 +648,7 @@ function invadeSpace() {
                     {
                         keepScore(1000)
                         bonusAliensLife = 0
-                        explodeX = shotX
-                        explodeY = shotY
-                        explode = true
+                        exploooooosion(shotX, shotY, 0, 0)
                         hit = true
                     }
     }

@@ -6,24 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Invaders</title>
     <style>
-      #main-canvas {
-        border: 1px solid rgb(0, 0, 0);
+      html * {
+        font-family: monospace;
+      }
+      body {
+        background-color: rgb(20, 20, 20);
+      }
+      #main-canvas-div {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      #score-div {
+        transform: translate(-5px, -20px);
+        width: 500px;
+        text-align: right;
+      }
+      #score {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: rgb(0, 255, 0);
+        text-align: right;
+        font-size: 17px;
+        height: 11px;
+      }
+      #lives-div {
+        transform: translate(-5px, -33px);
+        width: 500px;
+        text-align: left;
+      }
+      #lives {
+        border: none;
+        outline: none;
+        width: 40px;
+        background-color: transparent;
+        color: rgb(0, 255, 0);
+        text-align: center;
+        font-size: 17px;
+        font-style: bold;
+        height: 11px;
+      }
+
+      #main-canvas {
+        border: 1px solid rgb(255, 255, 255);
+        background-color: rgb(15, 15, 15);
+      }
+      #lives-canvas {
+        margin-top: 5px;
+        border: none;
+        background-color: transparent;
       }
     </style>
   </head>
   <body>
-    <div>
-      <input id="score" type="text" readonly />
-      <input id="time" type="text" readonly />
-      <input id="final-score" type="text" readonly />
-    </div>
-    <div id="main-div">
+    <div id="main-canvas-div">
       <canvas id="main-canvas"></canvas>
+      <canvas id="lives-canvas"></canvas>
+      <div id="score-div">
+        <input id="score" type="text" readonly value="POINTS: 0" />
+      </div>
+      <div id="lives-div">
+        <input type="text" id="lives" readonly value="3" />
+      </div>
     </div>
+    <input id="final-score" type="text" readonly />
+    <input id="time" type="text" readonly />
     <script src="index.js"></script>
   </body>
 </html>
