@@ -175,7 +175,7 @@ function hitBarrier(checkBarrier, clearBarrier) {
 
 function hitBarrierAlien(checkBarrier, clearBarrier) {
     let oneNinetyNine = 199
-    for (let i = 20; i > 10; i--) {
+    for (let i = 19; i > 9; i--) {
         if (alienShotY + 3 === rows - i && (
             clearBarrier.includes(oneNinetyNine - (checkBarrier - alienShotX)) === false
             )) {
@@ -378,6 +378,57 @@ function hitAlien(row, distApart, width, align, points) {
     }
 }
 
+function resetGame() {
+    console.log('reset')
+    score = 0
+    topAliensLife = [1, 2, 3, 4, 5, 6]
+    midAliensLife = [1, 2, 3, 4, 5, 6]
+    bottomAliensLife = [1, 2, 3, 4, 5, 6]
+    playerX = 0
+    hold = 0
+    kills = 0
+    alienSpeed = 50
+    bonusAliensLife = 1
+    bonusPosition = -800 + -Math.floor(Math.random() * 500)
+    alienY = 0
+    alienX = 0
+    d = 1
+    dy = 20
+    moveAlien = 0
+    pose = 1
+    alienColor = 'white'
+    rightBound = 37
+    leftBound = 2
+    lives = 3
+    drawLives(lives - 1)
+    document.getElementById('lives').value = lives
+    explode = false
+    state = 0
+    countFrames = 0
+    shotX = 0
+    fire = false
+    shotY = 10
+    ready = true
+    hit = false
+    alienFire = false
+    alienShotX = 1
+    alienShotY = 1
+    clearBarrierLeft = new Array(barrierArray.length)
+    for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierLeft[i] = barrierArray[i]
+    }
+    clearBarrierMid = new Array(barrierArray.length)
+    for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierMid[i] = barrierArray[i]
+    }
+    clearBarrierRight = new Array(barrierArray.length)
+    for (let i = 0; i < barrierArray.length; i++) {
+    clearBarrierRight[i] = barrierArray[i]
+    }
+    loseCondition = false
+    winCondition = false
+}
+
 let playerRight = false
 let playerLeft = false
 let fire = false
@@ -391,9 +442,12 @@ addEventListener('keydown', (e) => {
         playerLeft = true
         playerRight = false
     }
-    if (e.key === ' ' && ready === true) {
+    if (e.key === ' ' && ready === true && loseCondition === false && winCondition === false) {
         shotX = playerX
         fire = true
+    }
+    if (e.key === ' ' && (winCondition === true || loseCondition === true)) {
+        resetGame()
     }
 })
 addEventListener('keyup', (e) => {
@@ -497,15 +551,25 @@ let finalScore = 0
 
 function invadeSpace() {
     requestAnimationFrame(invadeSpace)
-
+    document.getElementById('game-end-stats').style.display='none'
+    document.getElementById('final-score').style.display=''
     if (loseCondition === true) {
-        document.getElementById('time').value = countFrames
+        document.getElementById('time').value = 'TIME : ' + countFrames
+        document.getElementById('score-2').value = 'SCORE: ' + score
+        document.getElementById('game-end-stats').style.display='flex'
+        document.getElementById('final-score').style.display='none'
+        document.getElementById('game-over-message').style.color='red'
+        document.getElementById('game-over-message').value='GAME OVER'
         return
     }
     if (winCondition === true) {
-        document.getElementById('time').value = countFrames
         finalScore = (5000 - countFrames) + score
-        document.getElementById('final-score').value = finalScore
+        document.getElementById('final-score').value = 'FINAL: ' + finalScore
+        document.getElementById('time').value = 'TIME : ' + countFrames
+        document.getElementById('score-2').value = 'SCORE: ' + score
+        document.getElementById('game-end-stats').style.display='flex'
+        document.getElementById('game-over-message').style.color='rgb(0, 255, 0)'
+        document.getElementById('game-over-message').value='YOU WIN'
         return
     }
 
